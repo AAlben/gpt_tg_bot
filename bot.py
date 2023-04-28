@@ -43,7 +43,7 @@ def gpt(question, topic=None):
 
 def gpt_translate(question):
     msgs = [{"role": "user", "content": question}]
-    msgs.insert(0, {"role": "system", "content": f"你是一个翻译机器人，中文翻译成英文，英文翻译成中文。"})
+    msgs.insert(0, {"role": "system", "content": f"你是一个中英、英中翻译机器人，翻译以下内容。"})
     return request(msgs)
 
 

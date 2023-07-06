@@ -21,7 +21,7 @@ def check_user(func):
     return wrapper
 
 
-def request(messages, model="gpt-3.5-turbo"):
+def request(messages, model="gpt-3.5-turbo-0613"):
     if os.getenv("DEBUG"):
         return "DEBUG"
     response = openai.ChatCompletion.create(model=model, messages=messages)
@@ -31,7 +31,7 @@ def request(messages, model="gpt-3.5-turbo"):
     return result
 
 
-# ----- START GPT Function -----
+# ----- START Callback Function -----
 
 
 def gpt(question, topic=None):
@@ -53,7 +53,13 @@ def gpt_code(question, topic):
     return request(msgs)
 
 
-# ----- END GPT Function -----
+def gpt_eng(question):
+    msgs = [{"role": "user", "content": question}]
+    msgs.insert(0, {"role": "system", "content": "我希望你能扮演一位英语老师和改进者的角色。我会用英语与你交流，对于我的英语句子或单词，介绍一下它的基本英语语法规则和用法，并提供例句和练习题。"})
+    return request(msgs)
+
+
+# ----- END Callback Function -----
 
 
 # ----- START Callback Function -----
@@ -95,6 +101,14 @@ async def code_callback(update, context):
 
 
 @check_user
+async def eng_callback(update, context):
+    msg = update.message.text.lstrip("/eng")
+    user_data = context.user_data
+    content = gpt_eng(msg)
+    await update.message.reply_text(content)
+
+
+@check_user
 async def general_callback(update, context):
     msg = update.message.text
     user_data = context.user_data
@@ -112,6 +126,7 @@ def main() -> None:
     application.add_handler(CommandHandler("c", clear_callback))
     application.add_handler(CommandHandler("t", translate_callback))
     application.add_handler(CommandHandler("code", code_callback))
+    application.add_handler(CommandHandler("eng", eng_callback))
     application.add_handler(MessageHandler(filters.TEXT, general_callback))
     application.run_polling()
 

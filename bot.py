@@ -31,7 +31,7 @@ def request(messages, model="gpt-3.5-turbo-0613"):
     return result
 
 
-# ----- START Callback Function -----
+# ----- START GPT Function -----
 
 
 def gpt(question, topic=None):
@@ -59,7 +59,7 @@ def gpt_eng(question):
     return request(msgs)
 
 
-# ----- END Callback Function -----
+# ----- END GPT Function -----
 
 
 # ----- START Callback Function -----
